@@ -45,3 +45,173 @@ model = CNNModel()
 # Assuming you have a training dataset and a validation dataset
 trainloader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
 testloader = torch.utils.data.DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+scheduler = ExponentialLR(optimizer, gamma=0.90)  # adjust the gamma parameter as needed.
+
+num_epochs = 20
+
+for epoch in range(num_epochs):
+    model.train()
+    running_loss = 0.0
+    for i, data in enumerate(trainloader, 0):
+        inputs, labels = data
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+
+    print(f"Epoch {epoch + 1}, Loss: {running_loss / len(trainloader)}")
+         # Update the learning rate
+    scheduler.step()
+
+print("Training finished.")
+
+# Testing the model on the test set
+
+
+model.eval()
+correct = 0
+total = 0
+
+with torch.no_grad():
+    for data in testloader:
+        inputs, labels = data
+        outputs = model(inputs)
+        _, predicted = torch.max(outputs, 1)
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+
+accuracy = 100 * correct / total
+print(f"Test Accuracy: {accuracy}%")
+
+# Loading ResNet-50 model
+resnet_model = models.resnet50(pretrained=True)
+resnet_model.fc = nn.Linear(2048, 10)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(resnet_model.parameters(), lr=0.0005)
+
+num_epochs = 20
+
+for epoch in range(num_epochs):
+    resnet_model.train()
+    running_loss = 0.0
+    for i, data in enumerate(trainloader, 0):
+        inputs, labels = data
+        optimizer.zero_grad()
+        outputs = resnet_model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+
+    print(f"Epoch {epoch + 1}, Loss: {running_loss / len(trainloader)}")
+
+print("Training finished.")
+
+# Testing the model on the test set
+
+
+resnet_model.eval()
+correct_r = 0
+total_r = 0
+
+with torch.no_grad():
+    for data in testloader:
+        inputs, labels = data
+        outputs = model(inputs)
+        _, predicted = torch.max(outputs, 1)
+        total_r += labels.size(0)
+        correct_r += (predicted == labels).sum().item()
+
+accuracy = 100 * correct_r / total_r
+print(f"Test Accuracy: {accuracy}%")
+
+# Loading DenseNet-121 model
+densenet_model = models.densenet121(pretrained=True)
+densenet_model.fc = nn.Linear(densenet_model.classifier.in_features, 10)
+
+criterion_d = nn.CrossEntropyLoss()
+optimizer_d = optim.Adam(densenet_model.parameters(), lr=0.0005)
+
+num_epochs = 20
+
+for epoch in range(num_epochs):
+    densenet_model.train()
+    running_loss_d = 0.0
+    for i, data in enumerate(trainloader, 0):
+        inputs_d, labels_d = data
+        optimizer_d.zero_grad()
+        outputs_d = densenet_model(inputs_d)
+        loss_d = criterion_d(outputs_d, labels_d)
+        loss_d.backward()
+        optimizer_d.step()
+        running_loss_d += loss_d.item()
+
+    print(f"Epoch {epoch + 1}, Loss: {running_loss_d / len(trainloader)}")
+
+print("Training finished.")
+
+# Testing the model on the test set
+
+
+densenet_model.eval()
+correct_d = 0
+total_d = 0
+
+with torch.no_grad():
+    for data in testloader:
+        inputs_d, labels_d = data
+        outputs_d = densenet_model(inputs_d)
+        _, predicted_d = torch.max(outputs_d, 1)
+        total_d += labels.size(0)
+        correct_d += (predicted_d == labels_d).sum().item()
+
+accuracy = 100 * correct_d / total_d
+print(f"Test Accuracy: {accuracy}%")
+
+alexnet_model = models.alexnet(pretrained=True)
+alexnet_model.fc = nn.Linear(4096, 10)
+
+criterion_a = nn.CrossEntropyLoss()
+optimizer_a = optim.Adam(alexnet_model.parameters(), lr=0.001)
+
+num_epochs = 20
+
+for epoch in range(num_epochs):
+    alexnet_model.train()
+    running_loss_a = 0.0
+    for i, data in enumerate(trainloader, 0):
+        inputs_a, labels_a = data
+        optimizer_a.zero_grad()
+        outputs_a = alexnet_model(inputs_a)
+        loss_a = criterion_a(outputs_a, labels_a)
+        loss_a.backward()
+        optimizer_a.step()
+        running_loss_a += loss_a.item()
+
+    print(f"Epoch {epoch + 1}, Loss: {running_loss_a / len(trainloader)}")
+
+print("Training finished.")
+
+# Testing the model on the test set
+
+
+alexnet_model.eval()
+correct_a = 0
+total_a = 0
+
+with torch.no_grad():
+    for data in testloader:
+        inputs_a, labels_a = data
+        outputs_a = alexnet_model(inputs_a)
+        _, predicted_a = torch.max(outputs_a, 1)
+        total_a += labels_a.size(0)
+        correct_a += (predicted_a == labels_a).sum().item()
+
+accuracy_a = 100 * correct_a / total_a
+print(f"Test Accuracy: {accuracy_a}%")
